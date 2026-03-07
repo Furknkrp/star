@@ -5,7 +5,6 @@ import * as THREE from 'three';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // --- ÖN YÜKLEME (PRELOAD) ---
-// Resimlerin tünel başında indirilmesini sağlayarak "anında" görünmesini sağlar.
 useTexture.preload('/photos/moon_phases_heart.png');
 useTexture.preload('/photos/final_photo.jpg');
 useTexture.preload('/photos/moon.jpg');
@@ -29,25 +28,9 @@ const loaderStyles = `
     20% { opacity: 1; }
     100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
   }
-  .heart {
-    position: fixed;
-    top: -50px;
-    fill: #ff4d6d;
-    pointer-events: none;
-    animation: fall linear infinite;
-    z-index: 1001;
-  }
-  .vine-container {
-    position: relative;
-    width: 300px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .flower {
-    filter: drop-shadow(0 0 5px currentColor);
-  }
+  .heart { position: fixed; top: -50px; fill: #ff4d6d; pointer-events: none; animation: fall linear infinite; z-index: 1001; }
+  .vine-container { position: relative; width: 300px; height: 40px; display: flex; align-items: center; justify-content: center; }
+  .flower { filter: drop-shadow(0 0 5px currentColor); }
 `;
 
 const Flower = ({ x, y, color, scale }) => (
@@ -60,11 +43,7 @@ const Flower = ({ x, y, color, scale }) => (
 );
 
 const Leaf = ({ x, y, rotation }) => (
-  <path
-    d="M0,0 Q5,-5 10,0 Q5,5 0,0"
-    fill="#4a6316"
-    transform={`translate(${x},${y}) rotate(${rotation})`}
-  />
+  <path d="M0,0 Q5,-5 10,0 Q5,5 0,0" fill="#4a6316" transform={`translate(${x},${y}) rotate(${rotation})`} />
 );
 
 const OverlayLoader = () => {
@@ -78,34 +57,25 @@ const OverlayLoader = () => {
     }
   }, [progress]);
 
-  const hearts = useMemo(() => {
-    return Array.from({ length: 20 }).map((_, i) => ({
-      id: i,
-      left: Math.random() * 100 + 'vw',
-      duration: Math.random() * 3 + 3 + 's',
-      delay: Math.random() * 5 + 's',
-      size: Math.random() * 15 + 10 + 'px'
-    }));
-  }, []);
+  const hearts = useMemo(() => Array.from({ length: 15 }).map((_, i) => ({
+    id: i, left: Math.random() * 100 + 'vw', duration: Math.random() * 3 + 3 + 's',
+    delay: Math.random() * 5 + 's', size: Math.random() * 15 + 10 + 'px'
+  })), []);
 
   if (!visible) return null;
 
   return (
-    <div style={{
-      position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
-      background: '#050505', display: 'flex', flexDirection: 'column',
-      alignItems: 'center', justifyContent: 'center', zIndex: 1000,
-      color: 'white', fontFamily: 'sans-serif', overflow: 'hidden'
-    }}>
+    <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', 
+      height: '100dvh', /* 100vh yerine 100dvh kullandık */
+      background: '#050505', display: 'flex', flexDirection: 'column', 
+      alignItems: 'center', justifyContent: 'center', zIndex: 1000, 
+      color: 'white', fontFamily: 'sans-serif', overflow: 'hidden' }}>
       <style>{loaderStyles}</style>
-
-      {/* Düşen Kalpler */}
       {hearts.map(h => (
         <svg key={h.id} className="heart" style={{ left: h.left, animationDuration: h.duration, animationDelay: h.delay, width: h.size }} viewBox="0 0 32 32">
           <path d="M16 28.5s-12-7.2-12-14.5c0-4 3.2-7.2 7.2-7.2 2.3 0 4.4 1.1 5.8 2.8 1.4-1.7 3.5-2.8 5.8-2.8 4 0 7.2 3.2 7.2 7.2 0 7.3-12 14.5-12 14.5z" />
         </svg>
       ))}
-
       <div className="vine-container">
         <svg style={{ position: 'absolute', width: '120%', height: '100%', pointerEvents: 'none' }} viewBox="0 0 300 40">
           <path d="M0,25 Q50,10 100,25 T200,25 T300,25" fill="none" stroke="#6b8e23" strokeWidth="3" strokeLinecap="round" />
@@ -117,20 +87,10 @@ const OverlayLoader = () => {
           <Leaf x={120} y={25} rotation={-30} />
           <Leaf x={210} y={18} rotation={10} />
         </svg>
-
-        <div style={{
-          width: '250px', height: '6px', background: 'rgba(255,255,255,0.1)',
-          borderRadius: '10px', position: 'relative', overflow: 'hidden', border: '1px solid rgba(107, 142, 35, 0.3)'
-        }}>
-          <div style={{
-            width: `${progress}%`, height: '100%',
-            background: 'linear-gradient(90deg, #6b8e23, #b5e48c)',
-            boxShadow: '0 0 10px #b5e48c',
-            transition: 'width 0.3s ease-out'
-          }} />
+        <div style={{ width: '250px', height: '6px', background: 'rgba(255,255,255,0.1)', borderRadius: '10px', position: 'relative', overflow: 'hidden', border: '1px solid rgba(107, 142, 35, 0.3)' }}>
+          <div style={{ width: `${progress}%`, height: '100%', background: 'linear-gradient(90deg, #6b8e23, #b5e48c)', boxShadow: '0 0 10px #b5e48c', transition: 'width 0.3s ease-out' }} />
         </div>
       </div>
-
       <p style={{ marginTop: '20px', fontSize: '12px', letterSpacing: '3px', textTransform: 'uppercase' }}>
         {progress < 100 ? `Evreni'M HAZIRLANIYOR: %${Math.round(progress)}` : 'BAŞLIYORUZ! Sevgili Sevgili`M'}
       </p>
@@ -141,16 +101,13 @@ const OverlayLoader = () => {
 // --- 2. 3D TÜNEL BİLEŞENLERİ ---
 
 const ShootingStars = () => {
-  const count = 150;
+  const count = 43; // OPTİMİZASYON: 150'den 40'a düşürüldü
   const mesh = useRef();
   const particles = useMemo(() => {
     const temp = [];
     for (let i = 0; i < count; i++) {
       temp.push({
-        x: (Math.random() - 0.5) * 50,
-        y: (Math.random() - 0.5) * 50,
-        z: (Math.random() - 0.5) * 100,
-        speed: Math.random() * 0.6 + 0.3
+        x: (Math.random() - 0.5) * 50, y: (Math.random() - 0.5) * 50, z: (Math.random() - 0.5) * 100, speed: Math.random() * 0.6 + 0.3
       });
     }
     return temp;
@@ -178,25 +135,21 @@ const ShootingStars = () => {
   );
 };
 
-// TunnelLayer.jsx içinde PhotoCard bileşenini şu şekilde güncelle:
 const PhotoCard = ({ url, position }) => {
-  // Texture yüklenirken hata oluşursa beyaz bir kare göstererek çökmesini engelleriz
-  const [texture, setTexture] = useState(null);
-
+  const texture = useTexture(url);
   useEffect(() => {
-    const loader = new THREE.TextureLoader();
-    loader.load(
-      url,
-      (tex) => setTexture(tex),
-      undefined,
-      () => console.log(`Resim yüklenemedi: ${url}`)
-    );
-  }, [url]);
-
-  if (!texture) return null;
+    if (texture) {
+      texture.minFilter = THREE.LinearFilter;
+      texture.generateMipmaps = false;
+    }
+  }, [texture]);
 
   return (
     <group position={position}>
+      <mesh position={[0, 0, -0.01]}>
+        <planeGeometry args={[2.5, 1.7]} />
+        <meshBasicMaterial color="#ffffff" transparent opacity={0.1} />
+      </mesh>
       <mesh>
         <planeGeometry args={[2.2, 1.4]} />
         <meshBasicMaterial map={texture} side={THREE.DoubleSide} />
@@ -209,32 +162,25 @@ const MoonPassage = ({ position }) => {
   const texture = useTexture('/photos/moon.jpg');
   return (
     <mesh position={position}>
-      {/* İsteğin üzerine tekrar Plane'e (düzlem/çember görünümü) çevrildi */}
       <planeGeometry args={[4.66, 4.66]} />
       <meshBasicMaterial map={texture} transparent opacity={1} side={THREE.DoubleSide} />
     </mesh>
   );
 };
 
-
 const Constellation = ({ data, position, scale = 5, opacityRef }) => {
   const lineGeometry = useMemo(() => {
     const points = [];
     const colors = [];
-    const colorWhite = new THREE.Color('#ffffff');
-
     data.lines.forEach(([startIdx, endIdx]) => {
       const start = data.stars[startIdx];
       const end = data.stars[endIdx];
       const vStart = new THREE.Vector3((start.x - 0.5) * scale, (start.y - 0.5) * -scale, 0);
       const vEnd = new THREE.Vector3((end.x - 0.5) * scale, (end.y - 0.5) * -scale, 0);
       const vMid = new THREE.Vector3().addVectors(vStart, vEnd).multiplyScalar(0.5);
-
       points.push(vStart, vMid, vMid, vEnd);
-      // Çizgileri daha da şeffaf yapıyoruz (0.15 parlaklık)
       colors.push(0, 0, 0, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0, 0, 0);
     });
-
     const geo = new THREE.BufferGeometry().setFromPoints(points);
     geo.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
     return geo;
@@ -246,13 +192,9 @@ const Constellation = ({ data, position, scale = 5, opacityRef }) => {
   useFrame((state) => {
     if (opacityRef.current && starsRef.current) {
       const currentOpacity = opacityRef.current.opacity;
-      linesRef.current.material.opacity = currentOpacity * 0.2; // Çizgiler iyice silikleşti
-
+      linesRef.current.material.opacity = currentOpacity * 0.2;
       starsRef.current.children.forEach((group, i) => {
-        // Merkez nokta
         group.children[0].material.opacity = currentOpacity;
-
-        // Parlama (Glow) - Çok daha hızlı ve mikro titreme
         const pulse = (Math.sin(state.clock.elapsedTime * 6 + i) + 1) * 0.5;
         group.children[1].material.opacity = currentOpacity * (0.05 + pulse * 0.2);
         group.children[1].scale.setScalar(0.5 + pulse * 0.5);
@@ -265,26 +207,11 @@ const Constellation = ({ data, position, scale = 5, opacityRef }) => {
       <group ref={starsRef}>
         {data.stars.map((star, i) => (
           <group key={i} position={[(star.x - 0.5) * scale, (star.y - 0.5) * -scale, 0]}>
-            {/* 1. MERKEZ: İğne ucu kadar küçük (0.009) */}
-            <mesh>
-              <sphereGeometry args={[0.015, 8, 8]} />
-              <meshBasicMaterial color="#ffffff" transparent />
-            </mesh>
-
-            {/* 2. PARLAMA: Ayırt edilemeyecek kadar dar (0.025) */}
-            <mesh>
-              <sphereGeometry args={[0.05, 12, 12]} />
-              <meshBasicMaterial
-                color="#ffffff"
-                transparent
-                blending={THREE.AdditiveBlending}
-                depthWrite={false}
-              />
-            </mesh>
+            <mesh><sphereGeometry args={[0.015, 8, 8]} /><meshBasicMaterial color="#ffffff" transparent /></mesh>
+            <mesh><sphereGeometry args={[0.05, 12, 12]} /><meshBasicMaterial color="#ffffff" transparent blending={THREE.AdditiveBlending} depthWrite={false} /></mesh>
           </group>
         ))}
       </group>
-
       <lineSegments ref={linesRef} geometry={lineGeometry}>
         <lineBasicMaterial vertexColors transparent blending={THREE.AdditiveBlending} />
       </lineSegments>
@@ -292,11 +219,9 @@ const Constellation = ({ data, position, scale = 5, opacityRef }) => {
   );
 };
 
-
 const FinalScene = ({ show, stopPoint }) => {
   const heartTexture = useTexture('/photos/moon_phases_heart.png');
   const finalPhotoTexture = useTexture('/photos/final_photo.jpg');
-
   const heartMat = useRef();
   const finalMat = useRef();
 
@@ -309,24 +234,9 @@ const FinalScene = ({ show, stopPoint }) => {
   });
 
   return (
-
     <group position={[0, 0, stopPoint - 4]}>
-      {/* Gemini - Sol Üstte (Fotoğraftaki gibi biraz daha yukarıda) */}
-      <Constellation
-        data={constellationData.gemini}
-        position={[-4, 1, -2]}
-        scale={6.7}
-        opacityRef={heartMat}
-      />
-
-      {/* Pisces - Sağ Altta (Fotoğraftaki gibi köşeye yakın) */}
-      <Constellation
-        data={constellationData.pisces}
-        position={[5.3, -1, -2]}
-        scale={7}
-        opacityRef={heartMat}
-      />
-
+      <Constellation data={constellationData.gemini} position={[-4, 1, -2]} scale={6.7} opacityRef={heartMat} />
+      <Constellation data={constellationData.pisces} position={[5.3, -1, -2]} scale={7} opacityRef={heartMat} />
       <mesh position={[-1.15, 0, 0]}>
         <planeGeometry args={[2, 3]} />
         <meshBasicMaterial ref={heartMat} map={heartTexture} transparent opacity={0} depthTest={false} />
@@ -342,9 +252,9 @@ const FinalScene = ({ show, stopPoint }) => {
 const TunnelGroup = ({ onReachEnd }) => {
   const { camera } = useThree();
   const [showFinal, setShowFinal] = useState(false);
-  const hasTriggeredEnd = useRef(false); // Kalbin çıkması için kilit mekanizması
+  const hasTriggeredEnd = useRef(false);
 
-  const totalPhotos = 266;
+  const totalPhotos = 43; // OPTİMİZASYON: 266'dan 30'a düşürüldü. Telefonlar rahatlayacak.
   const radius = 3.5;
   const photosPerRing = 6;
   const ringHeightSpacing = 2.5;
@@ -358,7 +268,7 @@ const TunnelGroup = ({ onReachEnd }) => {
       const angle = (i % photosPerRing / photosPerRing) * Math.PI * 2;
       temp.push({
         pos: [Math.cos(angle) * radius, Math.sin(angle) * radius, -(ringIndex * ringHeightSpacing)],
-        url: `/photos/${i + 1}.jpg`
+        url: `/photos/${i + 1}.jpg` // Klasöründe 1.jpg'den 30.jpg'ye kadar dosyalar olmalı
       });
     }
     return temp;
@@ -377,7 +287,6 @@ const TunnelGroup = ({ onReachEnd }) => {
       }
     } else {
       camera.position.z = stopPoint;
-      // Kamera durduğunda ve daha önce tetiklenmediyse kalbi göster
       if (!hasTriggeredEnd.current) {
         hasTriggeredEnd.current = true;
         onReachEnd();
@@ -391,19 +300,17 @@ const TunnelGroup = ({ onReachEnd }) => {
       <MoonPassage position={[0, 0, moonPos]} />
       <FinalScene show={showFinal} stopPoint={stopPoint} />
       <ShootingStars />
-      <Stars radius={100} count={1000} factor={4} fade speed={1} />
+      <Stars radius={100} count={600} factor={4} fade speed={1} /> {/* OPTİMİZASYON: Yıldızlar 400'e indi */}
     </>
   );
 };
 
 // --- 3. ANA KATMAN ---
-const TunnelLayer = ({ onFinish }) => {
+const TunnelLayer = () => { // onFinish prop'unu kaldırdık çünkü tek sayfa
   const [showHeart, setShowHeart] = useState(false);
-  const [isExpanding, setIsExpanding] = useState(false); //  Patlama efekti kontrolü
+  const [finalMessage, setFinalMessage] = useState(false); // Yeni final durumu
   const audioRef = useRef(null);
 
-  // Tarayıcı engeline takılmamak için kullanıcı sayfaya tıkladığında 
-  // müziğin başladığından emin olan küçük bir fonksiyon
   const startMusic = () => {
     if (audioRef.current) {
       audioRef.current.play().catch(error => {
@@ -415,16 +322,9 @@ const TunnelLayer = ({ onFinish }) => {
   return (
     <div
       style={{ width: '100vw', height: '100vh', background: '#050505', position: 'relative' }}
-      onClick={startMusic} // Sayfanın herhangi bir yerine tıklandığında müzik başlar
+      onClick={startMusic}
     >
-      {/* SES DOSYASI */}
-      <audio
-        ref={audioRef}
-        src="/space.mp3"
-        autoPlay
-        loop
-      />
-
+      <audio ref={audioRef} src="/space.mp3" autoPlay loop />
       <OverlayLoader />
 
       <Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
@@ -433,88 +333,39 @@ const TunnelLayer = ({ onFinish }) => {
         </Suspense>
       </Canvas>
 
-      {/* ❤️ ÖZELLEŞTİRİLMİŞ SİMLİ KALP VE GEÇİŞ EFEKTİ */}
       <AnimatePresence>
         {showHeart && (
           <motion.div
-            style={{
-              position: 'fixed',
-              inset: 0,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              zIndex: 9999,
-              pointerEvents: isExpanding ? 'none' : 'auto'
-            }}
+            style={{ position: 'fixed', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}
           >
-            {/* Patlama Efekti (Işıltı Yayılması) */}
-            {isExpanding && (
+            {finalMessage ? (
               <motion.div
-                initial={{ scale: 0, opacity: 0 }}
-                animate={{ scale: 100, opacity: 1 }} // Tüm ekranı kaplayana kadar büyür
-                transition={{ duration: 1.5, ease: "circIn" }}
-                onAnimationComplete={onFinish} // Animasyon bitince Layer3'e geçer
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
                 style={{
-                  position: 'absolute',
-                  width: '50px',
-                  height: '50px',
-                  borderRadius: '50%',
-                  background: 'radial-gradient(circle, rgba(255,77,109,1) 0%, rgba(255,200,200,0.5) 50%, rgba(255,255,255,0) 100%)',
-                  boxShadow: '0 0 50px 20px #ff4d6d',
-                  filter: 'blur(5px)'
+                  color: '#fff', fontSize: '2rem', fontFamily: 'serif',
+                  textShadow: '0 0 20px #ff4d4d', textAlign: 'center', background: 'rgba(0,0,0,0.5)', padding: '20px', borderRadius: '15px'
                 }}
-              />
-            )}
-
-            {/* Ana Kalp Butonu */}
-            {!isExpanding && (
+              >
+                Çooooookkkk Seviyoruummm Senii 🤍
+              </motion.div>
+            ) : (
               <motion.button
                 key="magical-heart"
                 initial={{ opacity: 0, scale: 0 }}
                 animate={{
-                  opacity: 1,
-                  scale: [1, 1.2, 1], // Nabız
-                  filter: [
-                    'drop-shadow(0 0 10px #ff7c94ff)',
-                    'drop-shadow(0 0 30px #ff4d6d)', // Işıldama (Glow)
-                    'drop-shadow(0 0 10px #ff4d6d)'
-                  ]
+                  opacity: 1, scale: [1, 1.2, 1],
+                  filter: ['drop-shadow(0 0 10px #ff7c94ff)', 'drop-shadow(0 0 30px #ff4d6d)', 'drop-shadow(0 0 10px #ff4d6d)']
                 }}
                 transition={{
-                  opacity: { duration: 1.5 },
-                  scale: { repeat: Infinity, duration: 1.2, ease: "easeInOut" },
-                  filter: { repeat: Infinity, duration: 2, ease: "linear" }
+                  opacity: { duration: 1.5 }, scale: { repeat: Infinity, duration: 1.2, ease: "easeInOut" }, filter: { repeat: Infinity, duration: 2, ease: "linear" }
                 }}
-                onClick={() => setIsExpanding(true)} // Tıklandığında patlama başlar
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  fontSize: '120px',
-                  position: 'relative'
-                }}
+                onClick={() => setFinalMessage(true)} // Tıklandığında mesaj çıksın
+                style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '120px', position: 'relative' }}
               >
-                {/* İçi Boş Kırmızı Simli Görünüm */}
-                <span style={{
-                  WebkitTextStroke: '3px #ff002fff', // Kırmızı kenar
-                  color: 'transparent',
-                  textShadow: '0 0 0px rgba(121, 0, 22, 0.8)',
-                  display: 'block'
-                }}>
-                  ♡
-                </span>
-
-                {/* Sim Efekti İçin Küçük Parıltılar */}
-                <motion.div
-                  animate={{ opacity: [0, 1, 0] }}
-                  transition={{ repeat: Infinity, duration: 0.8 }}
-                  style={{ position: 'absolute', top: '10%', left: '20%', fontSize: '20px' }}
-                ></motion.div>
-                <motion.div
-                  animate={{ opacity: [0, 1, 0] }}
-                  transition={{ repeat: Infinity, duration: 1, delay: 0.3 }}
-                  style={{ position: 'absolute', bottom: '20%', right: '10%', fontSize: '20px' }}
-                ></motion.div>
+                <span style={{ WebkitTextStroke: '3px #ff002fff', color: 'transparent', textShadow: '0 0 0px rgba(121, 0, 22, 0.8)', display: 'block' }}>♡</span>
+                <motion.div animate={{ opacity: [0, 1, 0] }} transition={{ repeat: Infinity, duration: 0.8 }} style={{ position: 'absolute', top: '10%', left: '20%', fontSize: '20px' }}></motion.div>
+                <motion.div animate={{ opacity: [0, 1, 0] }} transition={{ repeat: Infinity, duration: 1, delay: 0.3 }} style={{ position: 'absolute', bottom: '20%', right: '10%', fontSize: '20px' }}></motion.div>
               </motion.button>
             )}
           </motion.div>
