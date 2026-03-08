@@ -255,7 +255,7 @@ const TunnelGroup = ({ onReachEnd }) => {
   const hasTriggeredEnd = useRef(false);
 
   const totalPhotos = 43; // OPTİMİZASYON: 266'dan 30'a düşürüldü. Telefonlar rahatlayacak.
-  const radius = 3;
+  const radius = 2.5;
   const photosPerRing = 5;
   const ringHeightSpacing = 2.5;
   const totalRings = Math.ceil(totalPhotos / photosPerRing);
