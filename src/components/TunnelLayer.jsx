@@ -255,8 +255,8 @@ const TunnelGroup = ({ onReachEnd }) => {
   const hasTriggeredEnd = useRef(false);
 
   const totalPhotos = 43; // OPTİMİZASYON: 266'dan 30'a düşürüldü. Telefonlar rahatlayacak.
-  const radius = 3.5;
-  const photosPerRing = 6;
+  const radius = 3;
+  const photosPerRing = 5;
   const ringHeightSpacing = 2.5;
   const totalRings = Math.ceil(totalPhotos / photosPerRing);
   const tunnelLength = totalRings * ringHeightSpacing;
@@ -300,7 +300,7 @@ const TunnelGroup = ({ onReachEnd }) => {
       <MoonPassage position={[0, 0, moonPos]} />
       <FinalScene show={showFinal} stopPoint={stopPoint} />
       <ShootingStars />
-      <Stars radius={100} count={600} factor={4} fade speed={1} /> {/* OPTİMİZASYON: Yıldızlar 400'e indi */}
+      <Stars radius={100} count={300} factor={4} fade speed={1} /> {/* OPTİMİZASYON: Yıldızlar 400'e indi */}
     </>
   );
 };
